@@ -1,0 +1,17 @@
+---
+- name: moduleに必要なパッケージをインストール
+  yum: name={{ item }} state=present
+  with_items:
+  - python-iniparse
+  - MySQL-python
+- name: install mysql
+  yum: name={{ item }} state=installed
+  with_items:
+    - mysql
+    - mysql-server
+- name: config mysql
+  copy: src=my.cnf dest=/etc/my.cnf owner=root group=root mode=0644
+  notify:
+    - restart mysqld
+- name: start mysqld
+  service: name=mysqld state=started enabled=yes

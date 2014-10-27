@@ -1,0 +1,36 @@
+---
+- name: Apacheをインストール
+  yum: name={{ item }} state=present
+  with_items:
+    - httpd
+    - httpd-devel
+    - mod_ssl
+- name: docrootを作成
+  ignore_errors: true
+  register: result
+  file: path={{ docroot }} state=directory owner={{ username }} group={{ username }}
+- name: chown docroot
+  when: result|success
+  command: chown -R {{ username }}. /var/www/html
+- name: httpd.confの設定
+  copy: src=httpd.conf dest=/etc/httpd/conf/httpd.conf owner=root group=root
+  notify:
+    - restart httpd
+- name: ssl.confの設定
+  copy: src=ssl.conf dest=/etc/httpd/conf.d/ssl.conf owner=root group=root
+  notify:
+    - restart httpd
+- name: VirtualHostの設定
+  template: src=virtualhosts.conf.j2 dest=/etc/httpd/conf.d/virtualhosts.conf owner=root group=root
+  notify:
+    - restart httpd
+- name: welcome.conf を削除
+  shell: if [ -f "/etc/httpd/conf.d/welcome.conf" ]; then mv -f /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf.orig; fi
+  notify:
+    - restart httpd
+- name: .svn などの隠ぺいの設定
+  copy: src=hide_files.conf dest=/etc/httpd/conf.d/hide_files.conf
+  notify:
+    - restart httpd
+- name: Apacheの有効化
+  service: name=httpd enabled=yes state=started

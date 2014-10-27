@@ -1,0 +1,9 @@
+---
+- name: Xdebugをインストール
+  yum: name=php-pecl-xdebug enablerepo=epel,remi,remi-php55
+  notify:
+    - restart httpd
+- name: xdebug.iniを設定
+  copy: src=xdebug.ini dest=/etc/php.d/xdebug.ini
+  notify:
+    - restart httpd

@@ -1,0 +1,29 @@
+---
+- name: PHP 5.5 をインストール
+  yum: name={{ item }} state=present enablerepo=epel,remi,remi-php55
+  with_items:
+  - php
+  - php-pear
+  - php-devel
+  - php-xml
+  - php-mbstring
+  - php-pgsql
+  - php-gd
+  - php-mysqlnd
+  - php-mcrypt
+- name: memory_limit=256MB
+  ini_file: dest=/etc/php.d/my.ini section=global option=memory_limit value=256M mode=0600
+  notify:
+  - restart httpd
+- name: mbstring.language=Japanese
+  ini_file: dest=/etc/php.d/my.ini section=mbstring option=mbstring.language value=Japanese mode=0600
+  notify:
+  - restart httpd
+- name: mbstring.internal_encoding=utf-8
+  ini_file: dest=/etc/php.d/my.ini section=mbstring option=mbstring.internal_encoding value=utf-8 mode=0600
+  notify:
+  - restart httpd
+- name: date.timezone="Asia/Tokyo"
+  ini_file: dest=/etc/php.d/timezone.ini section=Date option=date.timezone value=Asia/Tokyo mode=0600
+  notify:
+  - restart httpd

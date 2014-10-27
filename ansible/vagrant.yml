@@ -1,0 +1,14 @@
+---
+- name: tmpserver
+  hosts: all
+  sudo: true
+  user: vagrant
+  vars:
+    username: fusic
+    docroot: /var/www/html/
+  roles:
+    - common
+    - apache
+    - php
+    - xdebug
+    - mysql
