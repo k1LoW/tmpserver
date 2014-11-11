@@ -4,6 +4,7 @@
   sudo: true
   user: vagrant
   vars:
+    hostname: tmpserver.vagrant
     username: fusic
     docroot: /var/www/html/
   roles:
