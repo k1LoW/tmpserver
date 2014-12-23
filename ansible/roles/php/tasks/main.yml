@@ -11,6 +11,7 @@
   - php-gd
   - php-mysqlnd
   - php-mcrypt
+  - php-intl
 - name: memory_limit=256MB
   ini_file: dest=/etc/php.d/my.ini section=global option=memory_limit value=256M mode=0655
   notify:
